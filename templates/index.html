@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Task Control — Mission Log</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ============ HEADER / RUNWAY ============ -->
+  <header class="deck-header">
+    <div class="deck-header__top">
+      <div class="brand">
+        <span class="brand__mark">▲</span>
+        <div class="brand__text">
+          <h1>Task Control</h1>
+          <p>Mission log &amp; task tracker</p>
+        </div>
+      </div>
+      <button id="btn-new-task" class="btn btn--accent">+ New Task</button>
+    </div>
+
+    <div class="runway" id="runway">
+      <div class="runway__label">
+        <span>COMPLETION</span>
+        <span id="runway-pct">0%</span>
+      </div>
+      <div class="runway__track">
+        <div class="runway__fill" id="runway-fill" style="width:0%"></div>
+        <div class="runway__ticks"></div>
+      </div>
+      <div class="runway__stats" id="runway-stats">
+        <span class="stat"><i class="dot dot--pending"></i>Pending: <b id="stat-pending">0</b></span>
+        <span class="stat"><i class="dot dot--progress"></i>In progress: <b id="stat-progress">0</b></span>
+        <span class="stat"><i class="dot dot--done"></i>Done: <b id="stat-done">0</b></span>
+        <span class="stat stat--alert"><i class="dot dot--high"></i>High priority open: <b id="stat-high">0</b></span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============ FILTER BAR ============ -->
+  <section class="filter-bar">
+    <input type="search" id="search" placeholder="Search tasks by title or description…" autocomplete="off">
+    <select id="filter-priority">
+      <option value="">All priorities</option>
+      <option value="high">High</option>
+      <option value="medium">Medium</option>
+      <option value="low">Low</option>
+    </select>
+    <select id="filter-category">
+      <option value="">All categories</option>
+    </select>
+    <button id="btn-clear-filters" class="btn btn--ghost">Clear</button>
+  </section>
+
+  <!-- ============ BOARD ============ -->
+  <main class="board" id="board">
+    <div class="column" data-status="pending">
+      <div class="column__head">
+        <h2>Pending</h2>
+        <span class="column__count" id="count-pending">0</span>
+      </div>
+      <div class="column__list" id="list-pending"></div>
+    </div>
+
+    <div class="column" data-status="in_progress">
+      <div class="column__head">
+        <h2>In Progress</h2>
+        <span class="column__count" id="count-in_progress">0</span>
+      </div>
+      <div class="column__list" id="list-in_progress"></div>
+    </div>
+
+    <div class="column" data-status="done">
+      <div class="column__head">
+        <h2>Done</h2>
+        <span class="column__count" id="count-done">0</span>
+      </div>
+      <div class="column__list" id="list-done"></div>
+    </div>
+  </main>
+
+</div>
+
+<!-- ============ TASK MODAL (add / edit) ============ -->
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal">
+    <div class="modal__head">
+      <h3 id="modal-title">New Task</h3>
+      <button class="modal__close" id="modal-close">&times;</button>
+    </div>
+    <form id="task-form">
+      <input type="hidden" id="task-id">
+
+      <label>Title
+        <input type="text" id="field-title" required maxlength="120" placeholder="e.g. Draft API documentation">
+      </label>
+
+      <label>Description
+        <textarea id="field-description" rows="3" placeholder="Optional details…"></textarea>
+      </label>
+
+      <div class="modal__row">
+        <label>Category
+          <input type="text" id="field-category" placeholder="e.g. Backend" value="General">
+        </label>
+        <label>Due date
+          <input type="date" id="field-due">
+        </label>
+      </div>
+
+      <div class="modal__row">
+        <label>Priority
+          <select id="field-priority">
+            <option value="low">Low</option>
+            <option value="medium" selected>Medium</option>
+            <option value="high">High</option>
+          </select>
+        </label>
+        <label>Status
+          <select id="field-status">
+            <option value="pending" selected>Pending</option>
+            <option value="in_progress">In Progress</option>
+            <option value="done">Done</option>
+          </select>
+        </label>
+      </div>
+
+      <p class="form-error" id="form-error"></p>
+
+      <div class="modal__actions">
+        <button type="button" class="btn btn--ghost" id="btn-delete" style="display:none;">Delete</button>
+        <div class="modal__actions-right">
+          <button type="button" class="btn btn--ghost" id="btn-cancel">Cancel</button>
+          <button type="submit" class="btn btn--accent">Save Task</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
