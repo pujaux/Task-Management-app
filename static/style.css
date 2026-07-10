@@ -56,7 +56,48 @@ html, body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: transparent !important; /* Forces the baby blue body glow to show through */
+  background: transparent !important; 
+  padding: 20px;
+}
+
+/* Fixes the narrow vertical box and text overlapping from image_43f10b.jpg */
+.auth-card, .login-container, .register-container, [class*="login"], [class*="auth"] {
+  background: rgba(255, 255, 255, 0.85) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: var(--radius) !important;
+  padding: 32px 24px !important;
+  width: 100% !important;
+  max-width: 400px !important;
+  box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.15) !important;
+  backdrop-filter: blur(12px) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 20px !important;
+  align-items: stretch !important;
+}
+
+/* Force headings inside the login card to remain readable, clean, and top-aligned */
+.auth-card h2, .auth-card h1, .login-container h2, [class*="login"] h2, [class*="auth"] h2 {
+  font-family: var(--font-display) !important;
+  color: #1e3a8a !important; /* Rich deep blue */
+  font-size: 24px !important;
+  font-weight: 700 !important;
+  text-align: center !important;
+  margin: 0 0 8px 0 !important;
+  display: block !important;
+  position: static !important;
+  width: 100% !important;
+}
+
+/* Ensure inputs take up full width nicely */
+.auth-card input, .login-container input {
+  width: 100% !important;
+  background: #ffffff !important;
+  color: var(--text) !important;
+  border: 1px solid var(--border) !important;
+  padding: 10px 14px !important;
+  font-size: 14px !important;
+  border-radius: var(--radius-sm) !important;
 }
 
 /* ---------- App Frame Container ---------- */
