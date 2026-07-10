@@ -33,18 +33,30 @@ html, body {
   margin: 0;
   padding: 0;
   min-height: 100vh;
+  width: 100%;
   color: var(--text);
   font-family: var(--font-body);
   -webkit-font-smoothing: antialiased;
   
   /* Baby blue base layer combined with radial light rays leaking from the screen corners */
-  background-color: var(--bg);
+  background-color: var(--bg) !important;
   background-image: 
     radial-gradient(circle at 0% 0%, rgba(255,255,255,0.8) 0%, transparent 35%),
     radial-gradient(circle at 100% 0%, rgba(255,255,255,0.8) 0%, transparent 35%),
     radial-gradient(circle at 100% 100%, rgba(255,255,255,0.6) 0%, transparent 40%),
-    radial-gradient(circle at 0% 100%, rgba(255,255,255,0.6) 0%, transparent 40%);
-  background-attachment: fixed;
+    radial-gradient(circle at 0% 100%, rgba(255,255,255,0.6) 0%, transparent 40%) !important;
+  background-attachment: fixed !important;
+  background-size: cover !important;
+}
+
+/* ---------- Authentication Screens Layout Fix ---------- */
+.auth-page, .auth-wrapper, .auth-container {
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent !important; /* Forces the baby blue body glow to show through */
 }
 
 /* ---------- App Frame Container ---------- */
