@@ -19,7 +19,7 @@ DB_PATH = BASE_DIR / "tasks.db"
 SCHEMA_PATH = BASE_DIR / "schema.sql"
 
 app = Flask(__name__)
-
+app.secret_key = "super_secret_deadline_key_123"
 
 # --------------------------------------------------------------------------
 # Database helpers
