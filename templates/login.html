@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Control — Authorization</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .auth-container {
+            max-width: 400px;
+            margin: 100px auto;
+            padding: 30px;
+            background: #1e1e2e;
+            border: 1px solid #313244;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+        }
+        .auth-title {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #cdd6f4;
+            text-align: center;
+            font-weight: 600;
+        }
+        .auth-input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            background: #11111b;
+            border: 1px solid #45475a;
+            color: #cdd6f4;
+            border-radius: 6px;
+            box-sizing: border-box;
+        }
+        .auth-btn {
+            width: 100%;
+            padding: 12px;
+            background: #89b4fa;
+            color: #11111b;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .auth-btn:hover { background: #b4befe; }
+        .auth-error { color: #f38ba8; margin-bottom: 15px; text-align: center; font-size: 14px; }
+        .auth-msg { color: #a6e3a1; margin-bottom: 15px; text-align: center; font-size: 14px; }
+        .auth-switch { text-align: center; margin-top: 15px; font-size: 14px; color: #a6adc8; }
+        .auth-switch a { color: #89b4fa; text-decoration: none; }
+    </style>
+</head>
+<body style="background: #11111b; font-family: sans-serif; color: #cdd6f4;">
+
+    <div class="auth-container">
+        {% if register %}
+            <div class="auth-title">Create Account</div>
+            <form action="/register" method="POST">
+        {% else %}
+            <div class="auth-title">Mission Control Login</div>
+            <form action="/login" method="POST">
+        {% endif %}
+
+            {% if error %}<div class="auth-error">{{ error }}</div>{% endif %}
+            {% if msg %}<div class="auth-msg">{{ msg }}</div>{% endif %}
+
+            <input type="text" name="username" class="auth-input" placeholder="Username" required autocomplete="off">
+            <input type="password" name="password" class="auth-input" placeholder="Password" required>
+
+            {% if register %}
+                <button type="submit" class="auth-btn">Register</button>
+                <div class="auth-switch">Already have an account? <a href="/login">Login here</a></div>
+            {% else %}
+                <button type="submit" class="auth-btn">Access System</button>
+                <div class="auth-switch">New to the platform? <a href="/register">Register here</a></div>
+            {% endif %}
+        </form>
+    </div>
+
+</body>
+</html> 
