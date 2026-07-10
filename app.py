@@ -43,13 +43,34 @@ def close_db(exception=None):
 
 
 def init_db():
-    """Create the database from schema.sql if it does not exist yet."""
-    fresh = not DB_PATH.exists()
+    """Create the database and tables from schema.sql if they do not exist yet."""
     conn = sqlite3.connect(DB_PATH)
-    if fresh:
-        with open(SCHEMA_PATH, "r") as f:
-            conn.executescript(f.read())
-        conn.commit()
+    
+    # 1. Ensure the core tasks table is available
+    conn.execute("""
+    CREATE TABLE IF NOT EXISTS tasks (
+        id          INTEGER PRIMARY KEY AUTOINCREMENT,
+        title       TEXT    NOT NULL,
+        description TEXT    DEFAULT '',
+        category    TEXT    DEFAULT 'General',
+        priority    TEXT    NOT NULL DEFAULT 'medium',
+        status      TEXT    NOT NULL DEFAULT 'pending',
+        due_date    TEXT    DEFAULT NULL,
+        created_at  TEXT    NOT NULL,
+        updated_at  TEXT    NOT NULL
+    );
+    """)
+    
+    # 2. Ensure the login/registration users table is available
+    conn.execute("""
+    CREATE TABLE IF NOT EXISTS users (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        username TEXT UNIQUE NOT NULL,
+        password TEXT NOT NULL
+    );
+    """)
+    
+    conn.commit()
     conn.close()
 
 
