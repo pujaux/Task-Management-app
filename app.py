@@ -7,11 +7,14 @@ Run:
     python app.py
 Then open http://127.0.0.1:5000
 """
+"""
+Task Management System — Backend
+Python (Flask) + SQLite (SQL) REST API, serving a JS/HTML/CSS frontend.
+"""
 import sqlite3
 from datetime import datetime
 from pathlib import Path
 
-# Make sure sqlite3 is imported right here!
 from flask import Flask, g, jsonify, render_template, request, session, redirect, url_for
 
 BASE_DIR = Path(__file__).resolve().parent
