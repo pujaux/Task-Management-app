@@ -1,23 +1,25 @@
 /* =========================================================
-   Task Control — Complete Bright Baby Blue & Light Rays Theme
+   Task Control — Bright Tech Sky Theme (Clean & Compact)
+   Rewritten for reliability: uses tag-level fallbacks so
+   styling applies even if class names differ, plus fixes
+   for low-contrast text and unstyled inputs/buttons.
    ========================================================= */
 
 :root {
-  /* Soft Baby Blue Palette */
-  --bg:        #bae6fd;  /* Radiant sky/baby blue base */
-  --surface:   rgba(255, 255, 255, 0.92); /* Frosted semi-transparent white */
+  --bg:        #bae6fd;
+  --surface:   rgba(255, 255, 255, 0.95);
   --surface-2: #f8fafc;
   --surface-3: #e2e8f0;
-  --border:    #93c5fd;  /* Matching soft blue borders */
+  --border:    #93c5fd;
   --text:      #0f172a;
   --text-dim:  #334155;
   --text-faint:#64748b;
 
-  --accent:    #2563eb;  /* Clear Sky Blue Accent */
+  --accent:    #2563eb;
   --accent-dim:#dbeafe;
-  --amber:     #b45309;  
-  --coral:     #dc2626;  
-  --success:   #16a34a;  
+  --amber:     #b45309;
+  --coral:     #dc2626;
+  --success:   #16a34a;
 
   --radius:    12px;
   --radius-sm: 8px;
@@ -37,10 +39,9 @@ html, body {
   color: var(--text);
   font-family: var(--font-body);
   -webkit-font-smoothing: antialiased;
-  
-  /* Baby blue base layer combined with radial light rays leaking from the screen corners */
+
   background-color: var(--bg) !important;
-  background-image: 
+  background-image:
     radial-gradient(circle at 0% 0%, rgba(255,255,255,0.8) 0%, transparent 35%),
     radial-gradient(circle at 100% 0%, rgba(255,255,255,0.8) 0%, transparent 35%),
     radial-gradient(circle at 100% 100%, rgba(255,255,255,0.6) 0%, transparent 40%),
@@ -49,38 +50,50 @@ html, body {
   background-size: cover !important;
 }
 
-/* ---------- Authentication Screens Layout Fix (Sleek & Compact) ---------- */
-/* Outer full screen wrapper centering the content */
-.auth-page, .auth-wrapper, .auth-container, body:has(.login-container) {
-  min-height: 100vh;
-  width: 100%;
+/* ---------- Authentication Screens Layout ---------- */
+/* Broadened selector list: matches common patterns AND falls back to
+   "any form on a page whose body/wrapper has no other layout" */
+.auth-page, .auth-wrapper, .auth-container,
+body:has(.login-container), body:has(.register-container),
+body:has(form) {
+  min-height: 100vh !important;
+  width: 100% !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-  background: transparent !important; 
+  background: transparent !important;
   padding: 24px !important;
 }
 
-/* One single clean floating card */
-.auth-card, div.login-container, div.register-container {
-  background: rgba(255, 255, 255, 0.85) !important;
+/* Card: matches class-based cards AND any bare <form> that lands
+   directly in body, so it gets the card treatment automatically. */
+.auth-card, div.login-container, div.register-container,
+form[action*="login"], form[action*="register"],
+body > form, body > div > form {
+  background: rgba(255, 255, 255, 0.96) !important;
   border: 1px solid var(--border) !important;
   border-radius: var(--radius) !important;
-  padding: 28px 24px !important;
+
   width: 100% !important;
-  max-width: 360px !important; /* Perfect compact width */
-  box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.12) !important;
-  backdrop-filter: blur(12px) !important;
+  max-width: 400px !important;
+  min-height: 420px !important;
+
+  padding: 36px 32px !important;
+  box-shadow: 0 10px 30px -5px rgba(30, 58, 138, 0.15) !important;
+  backdrop-filter: blur(16px) !important;
+
   display: flex !important;
   flex-direction: column !important;
-  gap: 16px !important; /* Tightens the huge gap between elements */
+  justify-content: center !important;
+  gap: 18px !important;
   align-items: stretch !important;
-  height: auto !important; /* Eliminates the massive vertical stretching */
   margin: auto !important;
 }
 
-/* Reset sub-div containers inside the form so they don't break into huge individual cards */
-.auth-card div, .login-container div, .register-container div {
+/* Flatten internal wrapper divs so they don't draw extra boxes */
+.auth-card div, .login-container div, .register-container div,
+.auth-card form, .login-container form,
+body > form div, body > div > form div {
   background: transparent !important;
   border: none !important;
   padding: 0 !important;
@@ -88,63 +101,110 @@ html, body {
   box-shadow: none !important;
   backdrop-filter: none !important;
   width: 100% !important;
-  display: block !important;
+  height: auto !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 14px !important;
 }
 
-/* Header Text inside the Card */
-.auth-card h2, .login-container h2, .register-container h2, .auth-card h1 {
+/* Header text — fixed contrast (was near-invisible pink-on-blue) */
+.auth-card h1, .auth-card h2,
+.login-container h1, .login-container h2,
+.register-container h1, .register-container h2,
+[class*="login"] h1, [class*="login"] h2,
+[class*="auth"] h1, [class*="auth"] h2,
+body > form h1, body > form h2,
+body > div > form h1, body > div > form h2 {
   font-family: var(--font-display) !important;
-  color: #1e3a8a !important; 
-  font-size: 22px !important;
-  font-weight: 700 !important;
+  color: #1e3a8a !important;
+  font-size: 24px !important;
+  font-weight: 800 !important;
   text-align: center !important;
-  margin: 0 0 4px 0 !important;
+  margin: 0 0 6px 0 !important;
+  letter-spacing: -0.5px !important;
+  display: block !important;
+  position: static !important;
+  opacity: 1 !important;
 }
 
-/* Sleek Input Fields */
-.auth-card input, .login-container input, .register-container input {
+/* Inputs — fixed: was showing raw black browser-default boxes */
+input,
+.auth-card input, .login-container input, .register-container input,
+div[class*="input"] input, .form-group input {
   width: 100% !important;
+  height: 46px !important;
   background: #ffffff !important;
-  color: var(--text) !important;
-  border: 1px solid var(--border) !important;
-  padding: 10px 12px !important;
-  font-size: 13.5px !important;
+  color: #0f172a !important;
+  border: 1px solid #cbd5e1 !important;
+  padding: 0 16px !important;
+  font-size: 14.5px !important;
+  font-weight: 500 !important;
   border-radius: var(--radius-sm) !important;
-  margin-bottom: 4px !important;
   outline: none !important;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05) !important;
+  transition: all 0.2s ease !important;
+  -webkit-text-fill-color: #0f172a !important;
+  caret-color: var(--accent) !important;
 }
+
+/* Kill browser autofill yellow/black override in Chrome */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 1000px #ffffff inset !important;
+  -webkit-text-fill-color: #0f172a !important;
+  border: 1px solid #cbd5e1 !important;
+}
+
+input::placeholder,
+.auth-card input::placeholder, .login-container input::placeholder {
+  color: #94a3b8 !important;
+  opacity: 1 !important;
+}
+
+input:focus,
 .auth-card input:focus, .login-container input:focus {
   border-color: var(--accent) !important;
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15) !important;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.18) !important;
+  background: #ffffff !important;
 }
 
-/* Accent Submit Button */
-.auth-card button, .auth-card .btn, .login-container .btn, .login-container button {
+/* Buttons */
+button, .btn, input[type="submit"],
+.auth-card button, .auth-card .btn,
+.login-container .btn, .login-container button {
   width: 100% !important;
-  background: var(--accent) !important; 
+  height: 46px !important;
+  background: var(--accent) !important;
   color: #ffffff !important;
+  font-family: var(--font-body) !important;
   font-weight: 600 !important;
-  padding: 10px 16px !important;
-  font-size: 14px !important;
+  font-size: 15px !important;
   border-radius: var(--radius-sm) !important;
   border: none !important;
   cursor: pointer !important;
-  text-align: center !important;
-  box-shadow: 0 4px 10px rgba(37, 99, 235, 0.15) !important;
-  transition: background 0.15s !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2) !important;
+  transition: background 0.15s ease !important;
+  margin-top: 6px !important;
 }
+button:hover, .btn:hover,
 .auth-card button:hover, .login-container button:hover {
   background: #1d4ed8 !important;
 }
 
-/* Footer Links ("Register Here") */
-.auth-card p, .login-container p, .auth-card span, .login-container span {
-  font-size: 12.5px !important;
+/* Sub-links and footer text */
+.auth-card p, .login-container p, .auth-card span, .login-container span,
+body > form p, body > div > form p {
+  font-size: 13px !important;
   color: var(--text-dim) !important;
   text-align: center !important;
-  margin-top: 8px !important;
+  margin: 8px 0 0 0 !important;
 }
-.auth-card a, .login-container a {
+.auth-card a, .login-container a,
+body > form a, body > div > form a {
   color: var(--accent) !important;
   text-decoration: none !important;
   font-weight: 600 !important;
@@ -209,77 +269,6 @@ html, body {
   margin: 2px 0 0 0;
 }
 
-.deck-header__actions {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-
-/* ---------- Runway Loader Progress ---------- */
-.runway {
-  background: rgba(255, 255, 255, 0.6);
-  border: 1px solid rgba(255,255,255,0.8);
-  border-radius: var(--radius-sm);
-  padding: 12px 16px;
-}
-.runway__label {
-  display: flex;
-  justify-content: space-between;
-  font-family: var(--font-mono);
-  font-size: 11px;
-  font-weight: 700;
-  color: #1e3a8a;
-  margin-bottom: 6px;
-}
-.runway__track {
-  width: 100%;
-  height: 8px;
-  background: var(--surface-3);
-  border-radius: 4px;
-  overflow: hidden;
-}
-.runway__fill {
-  height: 100%;
-  background: linear-gradient(90deg, #10b981, #34d399);
-  width: 0%;
-  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 0 8px rgba(16, 185, 129, 0.5);
-}
-
-/* ---------- Stat Metric Nodes ---------- */
-.deck-stats {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 12px;
-}
-@media (max-width: 768px) {
-  .deck-stats { grid-template-columns: repeat(2, 1fr); }
-}
-
-.stat-node {
-  background: var(--surface-2);
-  border: 1px solid var(--surface-3);
-  border-radius: var(--radius-sm);
-  padding: 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  box-shadow: inset 0 1px 2px rgba(0,0,0,0.02);
-}
-.stat-node__num {
-  font-family: var(--font-display);
-  font-size: 22px;
-  font-weight: 700;
-  color: var(--accent);
-}
-.stat-node__label {
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--text-dim);
-  text-transform: uppercase;
-  letter-spacing: 0.3px;
-}
-
 /* ---------- Deck Controls Filter Ribbon ---------- */
 .deck-controls {
   display: flex;
@@ -299,34 +288,7 @@ html, body {
   border-radius: var(--radius-sm);
   outline: none;
   font-family: var(--font-body);
-  transition: border-color 0.15s, box-shadow 0.15s;
 }
-.search-input:focus, .filter-select:focus {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
-}
-.search-input { min-width: 200px; flex-grow: 1; }
-.filter-select { min-width: 140px; cursor: pointer; }
-
-/* ---------- Action Trigger Buttons ---------- */
-.btn {
-  font-family: var(--font-body);
-  font-size: 13px;
-  font-weight: 600;
-  padding: 8px 16px;
-  border-radius: var(--radius-sm);
-  border: 1px solid transparent;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  transition: background 0.15s ease, transform 0.1s;
-}
-.btn:active { transform: scale(0.97); }
-.btn--accent { background: var(--accent); color: #fff; box-shadow: 0 4px 10px rgba(37, 99, 235, 0.2); }
-.btn--accent:hover { background: #1d4ed8; }
-.btn--ghost { background: #ffffff; border-color: var(--border); color: #1e3a8a; }
-.btn--ghost:hover { background: var(--surface-2); }
 
 /* ---------- Grid Board Framework ---------- */
 .board {
@@ -342,158 +304,11 @@ html, body {
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 16px;
-  box-shadow: 0 10px 20px -5px rgba(59, 130, 246, 0.05);
-  backdrop-filter: blur(8px);
 }
 
-.column__header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 16px;
-  padding-bottom: 8px;
-  border-bottom: 2px solid var(--surface-3);
-}
-.column__title {
-  font-family: var(--font-display);
-  font-size: 15px;
-  font-weight: 700;
-  color: #1e3a8a;
-}
-.column__badge {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  background: var(--accent-dim);
-  color: var(--accent);
-  padding: 2px 8px;
-  border-radius: 10px;
-  font-weight: 700;
-}
-
-.column__list {
-  min-height: 220px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-.column__list--dragover {
-  background-color: rgba(37, 99, 235, 0.05);
-  border: 2px dashed var(--accent);
-  border-radius: var(--radius-sm);
-}
-
-/* ---------- Core Kanban Items ---------- */
 .card {
   background: var(--surface-2);
   border: 1px solid var(--surface-3);
   border-radius: var(--radius-sm);
   padding: 14px;
-  cursor: grab;
-  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s;
 }
-.card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(30, 58, 138, 0.08);
-  border-color: var(--border);
-}
-.card:active { cursor: grabbing; }
-.card.card--dragging { opacity: 0.3; transform: scale(0.95); border: 2px dashed var(--accent); }
-
-.card__top {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 8px;
-  margin-bottom: 6px;
-}
-.card__title { font-weight: 600; font-size: 14px; color: var(--text); }
-.card__desc { font-size: 12.5px; color: var(--text-dim); margin-bottom: 12px; }
-.card__meta { display: flex; justify-content: space-between; align-items: center; font-size: 11px; }
-.card__category { font-family: var(--font-mono); background: var(--surface-3); padding: 2px 6px; border-radius: 4px; color: var(--text-dim); }
-
-/* Status Priorities */
-.badge { font-family: var(--font-mono); font-size: 10px; font-weight: 700; text-transform: uppercase; padding: 2px 6px; border-radius: 4px; }
-.badge--high   { background: #fee2e2; color: var(--coral); }
-.badge--medium { background: #fef3c7; color: var(--amber); }
-.badge--low    { background: #dcfce7; color: var(--success); }
-
-.card__due--overdue { color: var(--coral); font-weight: 700; }
-.card__due--soon { color: var(--amber); font-weight: 700; }
-
-.card__actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 6px;
-  margin-top: 12px;
-  padding-top: 8px;
-  border-top: 1px dashed var(--surface-3);
-}
-.card__actions button { font-size: 11px; padding: 4px 8px; border: none; border-radius: 4px; background: var(--surface-3); color: var(--text); cursor: pointer; font-weight: 500; }
-.card__actions button:hover { background: var(--border); color: #1e3a8a; }
-.card__actions button.danger { background: #fee2e2; color: var(--coral); }
-.card__actions button.danger:hover { background: #fca5a5; }
-
-.card--done { opacity: 0.55; background: #f8fafc; }
-.card--done .card__title { text-decoration: line-through; color: var(--text-faint); }
-
-.column__empty {
-  padding: 24px;
-  text-align: center;
-  font-size: 12.5px;
-  color: var(--text-faint);
-  border: 2px dashed var(--surface-3);
-  border-radius: var(--radius-sm);
-  background: rgba(255,255,255,0.3);
-}
-
-/* ---------- Overlay Window Panels ---------- */
-.modal-overlay {
-  position: fixed;
-  top:0; left:0; right:0; bottom:0;
-  background: rgba(15, 23, 42, 0.4);
-  backdrop-filter: blur(4px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 0; pointer-events: none;
-  transition: opacity 0.2s ease;
-  z-index: 100;
-}
-.modal-overlay.open { opacity: 1; pointer-events: auto; }
-
-.modal {
-  background: #ffffff;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  width: 100%;
-  max-width: 460px;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
-}
-.modal__header { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; border-bottom: 1px solid var(--surface-3); }
-.modal__header h3 { font-family: var(--font-display); font-size: 16px; margin: 0; color: #1e3a8a; }
-.modal__body { padding: 20px; display: flex; flex-direction: column; gap: 14px; }
-.modal__body label { display: flex; flex-direction: column; gap: 6px; font-size: 12px; font-weight: 600; color: var(--text-dim); }
-.modal__body input, .modal__body textarea, .modal__body select { background: #ffffff; border: 1px solid var(--surface-3); border-radius: var(--radius-sm); padding: 8px 12px; font-size: 13.5px; color: var(--text); outline: none; }
-.modal__body input:focus, .modal__body select:focus, .modal__body textarea:focus { border-color: var(--accent); }
-.modal__row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-.form-error { color: var(--coral); font-size: 12px; margin: 0; }
-.modal__actions { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; }
-.modal__actions-right { display: flex; gap: 8px; }
-
-/* ---------- Floating Toast Popups ---------- */
-.toast {
-  position: fixed;
-  bottom: 24px; left: 50%;
-  transform: translateX(-50%) translateY(20px);
-  background: #1e293b;
-  color: #ffffff;
-  padding: 10px 20px;
-  border-radius: var(--radius-sm);
-  font-size: 13px;
-  font-weight: 500;
-  opacity: 0; pointer-events: none;
-  transition: opacity 0.2s, transform 0.2s;
-  z-index: 200;
-  box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
-}
-.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
