@@ -4,53 +4,109 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Task Control — Authorization</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <style>
-        .auth-container {
-            max-width: 400px;
-            margin: 100px auto;
-            padding: 30px;
-            background: #1e1e2e;
-            border: 1px solid #313244;
-            border-radius: 12px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.2);
-        }
-        .auth-title {
-            font-size: 24px;
-            margin-bottom: 20px;
-            color: #cdd6f4;
-            text-align: center;
-            font-weight: 600;
-        }
-        .auth-input {
+        body.auth-body {
+            min-height: 100vh;
             width: 100%;
-            padding: 12px;
-            margin-bottom: 15px;
-            background: #11111b;
-            border: 1px solid #45475a;
-            color: #cdd6f4;
-            border-radius: 6px;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            box-sizing: border-box;
+            font-family: var(--font-body, 'Inter', sans-serif);
+        }
+
+        .auth-container {
+            width: 100%;
+            max-width: 400px;
+            padding: 36px 32px;
+            background: rgba(255, 255, 255, 0.96);
+            border: 1px solid var(--border, #93c5fd);
+            border-radius: var(--radius, 12px);
+            box-shadow: 0 10px 30px -5px rgba(30, 58, 138, 0.15);
+            backdrop-filter: blur(16px);
             box-sizing: border-box;
         }
+
+        .auth-title {
+            font-family: var(--font-display, 'Space Grotesk', sans-serif);
+            font-size: 24px;
+            font-weight: 800;
+            margin-bottom: 22px;
+            color: #1e3a8a;
+            text-align: center;
+            letter-spacing: -0.5px;
+        }
+
+        .auth-input {
+            width: 100%;
+            height: 46px;
+            padding: 0 16px;
+            margin-bottom: 14px;
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            color: #0f172a;
+            border-radius: 8px;
+            font-size: 14.5px;
+            font-weight: 500;
+            box-sizing: border-box;
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
+            outline: none;
+            transition: all 0.2s ease;
+        }
+        .auth-input::placeholder { color: #94a3b8; }
+        .auth-input:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.18);
+        }
+
         .auth-btn {
             width: 100%;
-            padding: 12px;
-            background: #89b4fa;
-            color: #11111b;
+            height: 46px;
+            margin-top: 6px;
+            background: #2563eb;
+            color: #ffffff;
             border: none;
-            border-radius: 6px;
-            font-weight: bold;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 15px;
             cursor: pointer;
-            font-size: 16px;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+            transition: background 0.15s ease;
         }
-        .auth-btn:hover { background: #b4befe; }
-        .auth-error { color: #f38ba8; margin-bottom: 15px; text-align: center; font-size: 14px; }
-        .auth-msg { color: #a6e3a1; margin-bottom: 15px; text-align: center; font-size: 14px; }
-        .auth-switch { text-align: center; margin-top: 15px; font-size: 14px; color: #a6adc8; }
-        .auth-switch a { color: #89b4fa; text-decoration: none; }
+        .auth-btn:hover { background: #1d4ed8; }
+
+        .auth-error {
+            color: #dc2626;
+            margin-bottom: 15px;
+            text-align: center;
+            font-size: 14px;
+        }
+        .auth-msg {
+            color: #16a34a;
+            margin-bottom: 15px;
+            text-align: center;
+            font-size: 14px;
+        }
+        .auth-switch {
+            text-align: center;
+            margin-top: 18px;
+            font-size: 13px;
+            color: #334155;
+        }
+        .auth-switch a {
+            color: #2563eb;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .auth-switch a:hover { text-decoration: underline; }
     </style>
 </head>
-<body style="background: #11111b; font-family: sans-serif; color: #cdd6f4;">
+<body class="auth-body">
 
     <div class="auth-container">
         {% if register %}
@@ -78,4 +134,4 @@
     </div>
 
 </body>
-</html> 
+</html>
