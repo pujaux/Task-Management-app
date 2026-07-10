@@ -67,7 +67,52 @@ VALID_STATUSES = {"pending", "in_progress", "done"}
 # --------------------------------------------------------------------------
 @app.route("/")
 def index():
+    if "user_id" not in session:
+        return redirect(url_for("login"))
     return render_template("index.html")
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "POST":
+        username = request.form.get("username", "").strip()
+        password = request.form.get("password", "").strip()
+
+        db = get_db()
+        user = db.execute("SELECT * FROM users WHERE username = ?", (username,)).fetchone()
+
+        # Direct plaintext match for a quick assignment submission
+        if user and user["password"] == password:
+            session["user_id"] = user["id"]
+            session["username"] = user["username"]
+            return redirect(url_for("index"))
+
+        return render_template("login.html", error="Invalid username or password.")
+
+    return render_template("login.html")
+
+@app.route("/register", methods=["GET", "POST"])
+def register():
+    if request.method == "POST":
+        username = request.form.get("username", "").strip()
+        password = request.form.get("password", "").strip()
+
+        if not username or not password:
+            return render_template("login.html", error="Fields cannot be empty.", register=True)
+
+        db = get_db()
+        try:
+            db.execute("INSERT INTO users (username, password) VALUES (?, ?)", (username, password))
+            db.commit()
+            return render_template("login.html", msg="Registration successful! Please login.")
+        except sqlite3.IntegrityError:
+            return render_template("login.html", error="Username already exists.", register=True)
+
+    return render_template("login.html", register=True)
+
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect(url_for("login"))
 
 
 # --------------------------------------------------------------------------
