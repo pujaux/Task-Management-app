@@ -8,7 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <style>
-        body.auth-body {
+        body.lp-body {
             min-height: 100vh;
             width: 100%;
             margin: 0;
@@ -20,10 +20,10 @@
             font-family: var(--font-body, 'Inter', sans-serif);
         }
 
-        .auth-container {
+        .lp-card {
             width: 100%;
-            max-width: 400px;
-            padding: 36px 32px;
+            max-width: 380px;
+            padding: 32px 28px;
             background: rgba(255, 255, 255, 0.96);
             border: 1px solid var(--border, #93c5fd);
             border-radius: var(--radius, 12px);
@@ -32,103 +32,103 @@
             box-sizing: border-box;
         }
 
-        .auth-title {
+        .lp-title {
             font-family: var(--font-display, 'Space Grotesk', sans-serif);
-            font-size: 24px;
+            font-size: 22px;
             font-weight: 800;
-            margin-bottom: 22px;
+            margin-bottom: 18px;
             color: #1e3a8a;
             text-align: center;
             letter-spacing: -0.5px;
         }
 
-        .auth-input {
+        .lp-input {
             width: 100%;
-            height: 46px;
-            padding: 0 16px;
-            margin-bottom: 14px;
+            height: 44px;
+            padding: 0 14px;
+            margin-bottom: 12px;
             background: #ffffff;
             border: 1px solid #cbd5e1;
             color: #0f172a;
             border-radius: 8px;
-            font-size: 14.5px;
+            font-size: 14px;
             font-weight: 500;
             box-sizing: border-box;
             box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
             outline: none;
             transition: all 0.2s ease;
         }
-        .auth-input::placeholder { color: #94a3b8; }
-        .auth-input:focus {
+        .lp-input::placeholder { color: #94a3b8; }
+        .lp-input:focus {
             border-color: #2563eb;
             box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.18);
         }
 
-        .auth-btn {
+        .lp-btn {
             width: 100%;
-            height: 46px;
-            margin-top: 6px;
+            height: 44px;
+            margin-top: 4px;
             background: #2563eb;
             color: #ffffff;
             border: none;
             border-radius: 8px;
             font-weight: 600;
-            font-size: 15px;
+            font-size: 14.5px;
             cursor: pointer;
             box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
             transition: background 0.15s ease;
         }
-        .auth-btn:hover { background: #1d4ed8; }
+        .lp-btn:hover { background: #1d4ed8; }
 
-        .auth-error {
+        .lp-error {
             color: #dc2626;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
             text-align: center;
-            font-size: 14px;
+            font-size: 13.5px;
         }
-        .auth-msg {
+        .lp-msg {
             color: #16a34a;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
             text-align: center;
-            font-size: 14px;
+            font-size: 13.5px;
         }
-        .auth-switch {
+        .lp-switch {
             text-align: center;
-            margin-top: 18px;
+            margin-top: 14px;
             font-size: 13px;
             color: #334155;
         }
-        .auth-switch a {
+        .lp-switch a {
             color: #2563eb;
             text-decoration: none;
             font-weight: 600;
         }
-        .auth-switch a:hover { text-decoration: underline; }
+        .lp-switch a:hover { text-decoration: underline; }
     </style>
 </head>
-<body class="auth-body">
+<body class="lp-body">
 
-    <div class="auth-container">
+    <div class="lp-card">
         {% if register %}
-            <div class="auth-title">Create Account</div>
+            <div class="lp-title">Create Account</div>
             <form action="/register" method="POST">
         {% else %}
-            <div class="auth-title">Mission Control Login</div>
+            <div class="lp-title">Mission Control Login</div>
             <form action="/login" method="POST">
         {% endif %}
 
-            {% if error %}<div class="auth-error">{{ error }}</div>{% endif %}
-            {% if msg %}<div class="auth-msg">{{ msg }}</div>{% endif %}
+            {% if error %}<div class="lp-error">{{ error }}</div>{% endif %}
+            {% if msg %}<div class="lp-msg">{{ msg }}</div>{% endif %}
 
-            <input type="text" name="username" class="auth-input" placeholder="Username" required autocomplete="off">
-            <input type="password" name="password" class="auth-input" placeholder="Password" required>
+            <input type="text" name="username" class="lp-input" placeholder="Username" required autocomplete="off">
+            <input type="password" name="password" class="lp-input" placeholder="Password" required>
 
             {% if register %}
-                <button type="submit" class="auth-btn">Register</button>
-                <div class="auth-switch">Already have an account? <a href="/login">Login here</a></div>
+                <button type="submit" class="lp-btn">Register</button>
+                <div class="lp-switch">Already have an account? <a href="/login">Login here</a></div>
             {% else %}
-                <button type="submit" class="auth-btn">Access System</button>
-                <div class="auth-switch">New to the platform? <a href="/register">Register here</a></div>
+                <button type="submit" class="lp-btn">Access System</button>
+                <div class="lp-switch">New to the platform? <a href="/register">Register here</a></div>
             {% endif %}
         </form>
     </div>
