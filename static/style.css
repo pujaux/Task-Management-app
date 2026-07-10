@@ -49,55 +49,108 @@ html, body {
   background-size: cover !important;
 }
 
-/* ---------- Authentication Screens Layout Fix ---------- */
-.auth-page, .auth-wrapper, .auth-container {
+/* ---------- Authentication Screens Layout Fix (Sleek & Compact) ---------- */
+/* Outer full screen wrapper centering the content */
+.auth-page, .auth-wrapper, .auth-container, body:has(.login-container) {
   min-height: 100vh;
   width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
   background: transparent !important; 
-  padding: 20px;
+  padding: 24px !important;
 }
 
-/* Fixes the narrow vertical box and text overlapping from image_43f10b.jpg */
-.auth-card, .login-container, .register-container, [class*="login"], [class*="auth"] {
+/* One single clean floating card */
+.auth-card, div.login-container, div.register-container {
   background: rgba(255, 255, 255, 0.85) !important;
   border: 1px solid var(--border) !important;
   border-radius: var(--radius) !important;
-  padding: 32px 24px !important;
+  padding: 28px 24px !important;
   width: 100% !important;
-  max-width: 400px !important;
-  box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.15) !important;
+  max-width: 360px !important; /* Perfect compact width */
+  box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.12) !important;
   backdrop-filter: blur(12px) !important;
   display: flex !important;
   flex-direction: column !important;
-  gap: 20px !important;
+  gap: 16px !important; /* Tightens the huge gap between elements */
   align-items: stretch !important;
+  height: auto !important; /* Eliminates the massive vertical stretching */
+  margin: auto !important;
 }
 
-/* Force headings inside the login card to remain readable, clean, and top-aligned */
-.auth-card h2, .auth-card h1, .login-container h2, [class*="login"] h2, [class*="auth"] h2 {
+/* Reset sub-div containers inside the form so they don't break into huge individual cards */
+.auth-card div, .login-container div, .register-container div {
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  width: 100% !important;
+  display: block !important;
+}
+
+/* Header Text inside the Card */
+.auth-card h2, .login-container h2, .register-container h2, .auth-card h1 {
   font-family: var(--font-display) !important;
-  color: #1e3a8a !important; /* Rich deep blue */
-  font-size: 24px !important;
+  color: #1e3a8a !important; 
+  font-size: 22px !important;
   font-weight: 700 !important;
   text-align: center !important;
-  margin: 0 0 8px 0 !important;
-  display: block !important;
-  position: static !important;
-  width: 100% !important;
+  margin: 0 0 4px 0 !important;
 }
 
-/* Ensure inputs take up full width nicely */
-.auth-card input, .login-container input {
+/* Sleek Input Fields */
+.auth-card input, .login-container input, .register-container input {
   width: 100% !important;
   background: #ffffff !important;
   color: var(--text) !important;
   border: 1px solid var(--border) !important;
-  padding: 10px 14px !important;
+  padding: 10px 12px !important;
+  font-size: 13.5px !important;
+  border-radius: var(--radius-sm) !important;
+  margin-bottom: 4px !important;
+  outline: none !important;
+}
+.auth-card input:focus, .login-container input:focus {
+  border-color: var(--accent) !important;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15) !important;
+}
+
+/* Accent Submit Button */
+.auth-card button, .auth-card .btn, .login-container .btn, .login-container button {
+  width: 100% !important;
+  background: var(--accent) !important; 
+  color: #ffffff !important;
+  font-weight: 600 !important;
+  padding: 10px 16px !important;
   font-size: 14px !important;
   border-radius: var(--radius-sm) !important;
+  border: none !important;
+  cursor: pointer !important;
+  text-align: center !important;
+  box-shadow: 0 4px 10px rgba(37, 99, 235, 0.15) !important;
+  transition: background 0.15s !important;
+}
+.auth-card button:hover, .login-container button:hover {
+  background: #1d4ed8 !important;
+}
+
+/* Footer Links ("Register Here") */
+.auth-card p, .login-container p, .auth-card span, .login-container span {
+  font-size: 12.5px !important;
+  color: var(--text-dim) !important;
+  text-align: center !important;
+  margin-top: 8px !important;
+}
+.auth-card a, .login-container a {
+  color: var(--accent) !important;
+  text-decoration: none !important;
+  font-weight: 600 !important;
+}
+.auth-card a:hover, .login-container a:hover {
+  text-decoration: underline !important;
 }
 
 /* ---------- App Frame Container ---------- */
