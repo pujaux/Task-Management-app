@@ -1,5 +1,10 @@
 -- Task Management System — Database Schema
 -- Run automatically by app.py on first launch (see init_db()).
+CREATE TABLE IF NOT EXISTS users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    username TEXT UNIQUE NOT NULL,
+    password TEXT NOT NULL
+);
 
 DROP TABLE IF EXISTS tasks;
 

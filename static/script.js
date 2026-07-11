@@ -1,6 +1,7 @@
 /* =========================================================
    Task Control — frontend logic
    Talks to the Flask REST API at /api/tasks
+   Integrated with Native HTML5 Drag-and-Drop
    ========================================================= */
 
 const API = "/api/tasks";
@@ -136,34 +137,35 @@ function render() {
     list.innerHTML = items.map(renderCard).join("");
   }
 
-  // --- Drag and Drop & Click Events Binding ---
+  // Bind interactions and Native Drag-and-Drop to task cards
   document.querySelectorAll(".card").forEach(card => {
     const id = Number(card.dataset.id);
     
-    // Make card interactive for clicking
+    // Modal open event
     card.addEventListener("click", (e) => {
       if (e.target.closest("[data-action]")) return;
       openEditModal(id);
     });
 
-    // Native Drag events
+    // Drag start event
     card.addEventListener("dragstart", (e) => {
       card.classList.add("card--dragging");
       e.dataTransfer.setData("text/plain", id);
       e.dataTransfer.effectAllowed = "move";
     });
 
+    // Drag end clean up
     card.addEventListener("dragend", () => {
       card.classList.remove("card--dragging");
     });
   });
 
-  // Setup columns/lists to receive dropped elements
+  // Setup column drop containers
   ["pending", "in_progress", "done"].forEach(status => {
     const listContainer = document.getElementById(`list-${status}`);
     
     listContainer.addEventListener("dragover", (e) => {
-      e.preventDefault(); // Crucial to allow dropping
+      e.preventDefault(); // Required to allow drop action
       e.dataTransfer.dropEffect = "move";
       listContainer.classList.add("column__list--dragover");
     });
@@ -186,7 +188,7 @@ function render() {
     });
   });
 
-  // wire up explicit action buttons
+  // Wire up inline action buttons
   document.querySelectorAll("[data-action='cycle']").forEach(btn => {
     btn.addEventListener("click", (e) => {
       e.stopPropagation();
@@ -202,7 +204,41 @@ function render() {
   });
 }
 
-// Helper handler to change the task status on database via Drag & Drop
+function renderCard(task) {
+  const due = dueLabel(task.due_date);
+  const isDone = task.status === "done";
+  const nextLabel = { pending: "Start →", in_progress: "Finish →", done: "Reopen ↺" }[task.status];
+
+  return `
+    <div class="card ${isDone ? "card--done" : ""}" data-id="${task.id}" data-priority="${task.priority}" draggable="true">
+      <div class="card__top">
+        <div class="card__title">${escapeHtml(task.title)}</div>
+        <span class="badge badge--${task.priority}">${task.priority}</span>
+      </div>
+      ${task.description ? `<div class="card__desc">${escapeHtml(task.description)}</div>` : ""}
+      <div class="card__meta">
+        <span class="card__category">${escapeHtml(task.category || "General")}</span>
+        <span class="card__due ${due.cls}">${due.text}</span>
+      </div>
+      <div class="card__actions">
+        <button data-action="cycle" data-id="${task.id}">${nextLabel}</button>
+        <button data-action="delete" data-id="${task.id}" class="danger">Delete</button>
+      </div>
+    </div>
+  `;
+}
+
+// ---------- Actions ----------
+async function cycleStatus(id) {
+  try {
+    await apiRequest(`${API}/${id}/toggle`, { method: "PATCH" });
+    showToast("Status updated");
+    await refreshAll();
+  } catch (err) {
+    showToast(err.message);
+  }
+}
+
 async function handleDragDropUpdate(id, newStatus, currentTask) {
   try {
     const payload = {
@@ -220,18 +256,6 @@ async function handleDragDropUpdate(id, newStatus, currentTask) {
     });
     
     showToast(`Moved to ${newStatus.replace('_', ' ')}`);
-    await refreshAll();
-  } catch (err) {
-    showToast(err.message);
-  }
-}
-
-
-// ---------- Actions ----------
-async function cycleStatus(id) {
-  try {
-    await apiRequest(`${API}/${id}/toggle`, { method: "PATCH" });
-    showToast("Status updated");
     await refreshAll();
   } catch (err) {
     showToast(err.message);
