@@ -447,3 +447,16 @@ body > form a, body > div > form a {
 .runway__fill {
   background: linear-gradient(90deg, var(--accent), #60a5fa);
 }
+/* Logout link — top right corner */
+body > a[href="/logout"] {
+  position: fixed;
+  top: 20px;
+  right: 24px;
+  background: #fff;
+  padding: 8px 16px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  box-shadow: 0 2px 8px rgba(0,0,0,.08);
+  z-index: 50;
+  margin: 0 !important;
+}
