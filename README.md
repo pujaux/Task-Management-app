@@ -1,68 +1,82 @@
-# Task Control — Task Management System
+# 🛰️ Task Control — Mission Log Task Manager
 
-A full-stack, interactive task manager: **Python (Flask)** backend, **SQLite (SQL)** database,
-and a **JavaScript / HTML / CSS** single-page dashboard styled as a "mission log."
+A full-stack task management dashboard built with **Flask**, **SQLite**, and vanilla **JavaScript/HTML/CSS**, styled as a "mission log" — track tasks through Pending → In Progress → Done with a clean Kanban-style board.
 
-## Tech stack
 
-| Layer     | Tech                                   |
-|-----------|-----------------------------------------|
-| Backend   | Python 3, Flask, REST API               |
-| Database  | SQLite (`schema.sql`)                   |
-| Frontend  | Vanilla JavaScript (fetch API), HTML5, CSS3 |
 
-## Features
+---
 
-- Create, read, update, delete tasks (full CRUD)
-- Three-column Kanban board: **Pending → In Progress → Done** (click a card's action button to cycle status)
-- Priority levels (low / medium / high) with color-coded badges
-- Due dates with live "due in Nd / overdue by Nd" countdown labels
-- Categories, free-text search, and priority/category filters
-- Live dashboard stats: completion %, counts per status, open high-priority tasks
-- All data persisted server-side in SQLite — nothing is lost on refresh
+## ✨ Features
 
-## Project structure
+- **Full CRUD** — create, read, update, and delete tasks
+- **Kanban board** — three columns (Pending, In Progress, Done) with drag-and-drop and click-to-cycle status
+- **Priority levels** — low / medium / high, shown as color-coded badges
+- **Due date tracking** — live "due in N days" / "overdue by N days" labels
+- **Categories, search & filters** — free-text search plus priority/category filtering
+- **Live dashboard stats** — completion %, per-status counts, and open high-priority task count
+- **Persistent storage** — all data saved server-side in SQLite; nothing is lost on refresh
+
+---
+
+## 🧱 Tech Stack
+
+| Layer      | Technology                              |
+|------------|-------------------------------------------|
+| Backend    | Python 3, Flask, REST API                 |
+| Database   | SQLite (`schema.sql`)                     |
+| Frontend   | Vanilla JavaScript (Fetch API), HTML5, CSS3 |
+
+---
+
+## 📁 Project Structure
 
 ```
 taskapp/
 ├── app.py              # Flask app + REST API routes
 ├── schema.sql           # SQL schema (auto-run on first launch)
-├── requirements.txt
+├── requirements.txt      # Python dependencies
 ├── templates/
-│   └── index.html        # Page markup
+│   └── index.html         # Page markup
 ├── static/
-│   ├── style.css          # Styling (dark "mission log" theme)
-│   └── script.js           # Frontend logic (fetch calls, rendering, modal)
-└── tasks.db              # Created automatically on first run (SQLite file)
+│   ├── style.css           # Styling
+│   └── script.js            # Frontend logic (API calls, rendering, modal)
+└── tasks.db               # Auto-created SQLite database file
 ```
 
-## How to run
+---
+
+## 🚀 Getting Started
 
 ```bash
+# 1. Navigate into the project
 cd taskapp
+
+# 2. Install dependencies
 pip install -r requirements.txt
+
+# 3. Run the app
 python app.py
 ```
 
 Then open **http://127.0.0.1:5000** in your browser.
 
-The database (`tasks.db`) is created automatically on first launch, seeded
-with 5 example tasks so the board isn't empty. Delete `tasks.db` at any time
-to reset to the seed data.
+> The database (`tasks.db`) is created automatically on first launch and seeded with 5 example tasks. Delete `tasks.db` at any time to reset to the seed data.
 
-## REST API reference
+---
 
-| Method | Route                     | Description                              |
-|--------|----------------------------|-------------------------------------------|
-| GET    | `/api/tasks`                | List tasks (supports `?status=`, `?priority=`, `?category=`, `?search=`) |
-| POST   | `/api/tasks`                | Create a task                             |
-| GET    | `/api/tasks/<id>`            | Get one task                              |
-| PUT    | `/api/tasks/<id>`            | Update a task                             |
-| PATCH  | `/api/tasks/<id>/toggle`      | Cycle status: pending → in_progress → done → pending |
-| DELETE | `/api/tasks/<id>`            | Delete a task                             |
-| GET    | `/api/stats`                 | Dashboard summary stats                   |
+## 📡 REST API Reference
 
-### Example task JSON
+| Method   | Route                       | Description                                                     |
+|----------|-------------------------------|--------------------------------------------------------------------|
+| `GET`    | `/api/tasks`                  | List tasks (supports `?status=`, `?priority=`, `?category=`, `?search=`) |
+| `POST`   | `/api/tasks`                  | Create a task                                                     |
+| `GET`    | `/api/tasks/<id>`               | Get a single task                                                  |
+| `PUT`    | `/api/tasks/<id>`               | Update a task                                                      |
+| `PATCH`  | `/api/tasks/<id>/toggle`         | Cycle status: `pending → in_progress → done → pending`               |
+| `DELETE` | `/api/tasks/<id>`               | Delete a task                                                      |
+| `GET`    | `/api/stats`                    | Dashboard summary statistics                                       |
+
+### Example Task Payload
 
 ```json
 {
@@ -75,9 +89,16 @@ to reset to the seed data.
 }
 ```
 
-## Notes for submission
+---
 
-- Single command to run: `python app.py` (after `pip install -r requirements.txt`).
+## 📝 Notes
+
+- Single command to run: `python app.py` (after installing dependencies).
 - No external services or API keys required — everything runs locally with SQLite.
-- Code is organized by concern: `app.py` (Python/SQL layer), `templates/`+`static/`
-  (HTML/CSS/JS layer), matching a typical assignment rubric of "Python + SQL + JS + HTML + CSS."
+- Code is cleanly separated by concern: `app.py` (Python/SQL layer), `templates/` + `static/` (HTML/CSS/JS layer).
+
+---
+
+## 📄 License
+
+This project is available for personal and educational use.
