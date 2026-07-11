@@ -392,3 +392,58 @@ body > form a, body > div > form a {
   background: #0f172a; color: #fff; padding: 10px 20px; border-radius: 8px; font-size: 13px;
   opacity: 0; pointer-events: none; transition: all .25s; z-index: 200; }
 .toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+/* ===== Polish patch — append after previous additions ===== */
+
+/* Search + filter inputs: consistent look */
+.filter-bar input,
+.filter-bar select {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: #fff;
+  color: var(--text);
+  font-size: 14px;
+}
+.filter-bar input:focus,
+.filter-bar select:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(37,99,235,.15);
+  outline: none;
+}
+
+/* Clear filters: make it small + secondary, not a giant bar */
+#btn-clear-filters {
+  width: auto;
+  padding: 0 16px;
+  height: 40px;
+  background: transparent;
+  color: var(--text-dim);
+  border: 1px solid var(--border);
+  box-shadow: none;
+}
+#btn-clear-filters:hover { background: var(--surface-3); }
+
+/* Delete button: distinguish as destructive */
+.card__actions button[data-action="delete"] {
+  background: #fff;
+  color: var(--coral);
+  border: 1px solid #fecaca;
+}
+.card__actions button[data-action="delete"]:hover {
+  background: #fee2e2;
+}
+/* Start/Finish/Reopen: keep as primary accent look */
+.card__actions button[data-action="cycle"] {
+  background: var(--accent);
+  color: #fff;
+}
+.card__actions button[data-action="cycle"]:hover { background: #1d4ed8; }
+
+/* Progress bar: more visible track + fill */
+.runway__track {
+  background: #e2e8f0;
+  border: 1px solid var(--border);
+}
+.runway__fill {
+  background: linear-gradient(90deg, var(--accent), #60a5fa);
+}
