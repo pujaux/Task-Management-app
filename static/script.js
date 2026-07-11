@@ -390,5 +390,12 @@ els.filterPriority.addEventListener("change", onFilterChange);
 els.filterCategory.addEventListener("change", onFilterChange);
 els.btnClearFilters.addEventListener("click", clearFilters);
 
+function renderToday() {
+  const el = document.getElementById("today-badge");
+  if (!el) return;
+  const opts = { weekday: "long", month: "long", day: "numeric" };
+  el.textContent = new Date().toLocaleDateString("en-US", opts);
+}
+renderToday();
 // ---------- Init ----------
 refreshAll();

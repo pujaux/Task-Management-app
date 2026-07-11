@@ -461,3 +461,15 @@ a[href="/logout"] {
   z-index: 50;
   margin: 0 !important;
 }
+/* Today's date badge */
+.today-badge {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-faint);
+  background: var(--surface-2);
+  border: 1px solid var(--surface-3);
+  padding: 6px 14px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
