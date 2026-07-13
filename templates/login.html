@@ -1,137 +1,52 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Task Control — Authorization</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <style>
-        body.lp-body {
-            min-height: 100vh;
-            width: 100%;
-            margin: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 24px;
-            box-sizing: border-box;
-            font-family: var(--font-body, 'Inter', sans-serif);
-        }
-
-        .lp-card {
-            width: 100%;
-            max-width: 380px;
-            padding: 32px 28px;
-            background: rgba(255, 255, 255, 0.96);
-            border: 1px solid var(--border, #93c5fd);
-            border-radius: var(--radius, 12px);
-            box-shadow: 0 10px 30px -5px rgba(30, 58, 138, 0.15);
-            backdrop-filter: blur(16px);
-            box-sizing: border-box;
-        }
-
-        .lp-title {
-            font-family: var(--font-display, 'Space Grotesk', sans-serif);
-            font-size: 22px;
-            font-weight: 800;
-            margin-bottom: 18px;
-            color: #1e3a8a;
-            text-align: center;
-            letter-spacing: -0.5px;
-        }
-
-        .lp-input {
-            width: 100%;
-            height: 44px;
-            padding: 0 14px;
-            margin-bottom: 12px;
-            background: #ffffff;
-            border: 1px solid #cbd5e1;
-            color: #0f172a;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 500;
-            box-sizing: border-box;
-            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
-            outline: none;
-            transition: all 0.2s ease;
-        }
-        .lp-input::placeholder { color: #94a3b8; }
-        .lp-input:focus {
-            border-color: #2563eb;
-            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.18);
-        }
-
-        .lp-btn {
-            width: 100%;
-            height: 44px;
-            margin-top: 4px;
-            background: #2563eb;
-            color: #ffffff;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 14.5px;
-            cursor: pointer;
-            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
-            transition: background 0.15s ease;
-        }
-        .lp-btn:hover { background: #1d4ed8; }
-
-        .lp-error {
-            color: #dc2626;
-            margin-bottom: 12px;
-            text-align: center;
-            font-size: 13.5px;
-        }
-        .lp-msg {
-            color: #16a34a;
-            margin-bottom: 12px;
-            text-align: center;
-            font-size: 13.5px;
-        }
-        .lp-switch {
-            text-align: center;
-            margin-top: 14px;
-            font-size: 13px;
-            color: #334155;
-        }
-        .lp-switch a {
-            color: #2563eb;
-            text-decoration: none;
-            font-weight: 600;
-        }
-        .lp-switch a:hover { text-decoration: underline; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Task Control — Sign in</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body class="lp-body">
 
-    <div class="lp-card">
-        {% if register %}
-            <div class="lp-title">Create Account</div>
-            <form action="/register" method="POST">
-        {% else %}
-            <div class="lp-title">Mission Control Login</div>
-            <form action="/login" method="POST">
-        {% endif %}
-
-            {% if error %}<div class="lp-error">{{ error }}</div>{% endif %}
-            {% if msg %}<div class="lp-msg">{{ msg }}</div>{% endif %}
-
-            <input type="text" name="username" class="lp-input" placeholder="Username" required autocomplete="off">
-            <input type="password" name="password" class="lp-input" placeholder="Password" required>
-
-            {% if register %}
-                <button type="submit" class="lp-btn">Register</button>
-                <div class="lp-switch">Already have an account? <a href="/login">Login here</a></div>
-            {% else %}
-                <button type="submit" class="lp-btn">Access System</button>
-                <div class="lp-switch">New to the platform? <a href="/register">Register here</a></div>
-            {% endif %}
-        </form>
+  <div class="lp-shell">
+    <div class="lp-brand">
+      <svg class="radar" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="12" cy="12" r="9.5" stroke="#ffb020" stroke-width="1.3" opacity="0.5"/>
+        <circle cx="12" cy="12" r="5.5" stroke="#ffb020" stroke-width="1.3" opacity="0.75"/>
+        <circle cx="12" cy="12" r="1.7" fill="#ffb020"/>
+      </svg>
+      Task Control
     </div>
+
+    <div class="lp-card">
+      {% if register %}
+        <div class="lp-title">Create your account</div>
+        <div class="lp-subtitle">REGISTER · NEW OPERATOR</div>
+        <form action="/register" method="POST">
+      {% else %}
+        <div class="lp-title">Sign in</div>
+        <div class="lp-subtitle">MISSION LOG · TASK TRACKER</div>
+        <form action="/login" method="POST">
+      {% endif %}
+
+        {% if error %}<div class="lp-error">{{ error }}</div>{% endif %}
+        {% if msg %}<div class="lp-msg">{{ msg }}</div>{% endif %}
+
+        <input type="text" name="username" class="lp-input" placeholder="Username" required autocomplete="username">
+        <input type="password" name="password" class="lp-input" placeholder="Password" required autocomplete="{{ 'new-password' if register else 'current-password' }}">
+
+        {% if register %}
+          <button type="submit" class="lp-btn">Create account</button>
+          <div class="lp-switch">Already registered? <a href="/login">Sign in</a></div>
+        {% else %}
+          <button type="submit" class="lp-btn">Sign in</button>
+          <div class="lp-switch">New here? <a href="/register">Create an account</a></div>
+        {% endif %}
+      </form>
+    </div>
+  </div>
 
 </body>
 </html>
