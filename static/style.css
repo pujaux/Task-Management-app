@@ -53,10 +53,25 @@ html, body {
   font-family: var(--font-body);
   -webkit-font-smoothing: antialiased;
   background:
-    radial-gradient(ellipse 900px 500px at 15% -10%, rgba(255, 111, 145, 0.10), transparent 60%),
-    radial-gradient(ellipse 900px 500px at 100% 0%, rgba(249, 248, 113, 0.14), transparent 55%),
-    var(--bg);
+    radial-gradient(ellipse 60% 50% at 12% 8%,  rgba(255, 111, 145, 0.55), transparent 60%),
+    radial-gradient(ellipse 55% 45% at 88% 12%, rgba(249, 248, 113, 0.55), transparent 60%),
+    radial-gradient(ellipse 60% 55% at 20% 95%, rgba(255, 199, 95, 0.50), transparent 60%),
+    radial-gradient(ellipse 65% 55% at 95% 90%, rgba(255, 150, 113, 0.55), transparent 60%),
+    linear-gradient(120deg, #fff3e2, #ffe9e2 40%, #fff6de 100%);
+  background-size: 180% 180%, 180% 180%, 180% 180%, 180% 180%, 100% 100%;
+  background-position: 0% 0%, 100% 0%, 0% 100%, 100% 100%, center;
   background-attachment: fixed;
+  animation: mesh-drift 22s ease-in-out infinite;
+}
+
+@keyframes mesh-drift {
+  0%   { background-position: 0% 0%,   100% 0%,   0% 100%,   100% 100%, center; }
+  50%  { background-position: 20% 15%, 80% 20%,   15% 85%,   85% 80%,  center; }
+  100% { background-position: 0% 0%,   100% 0%,   0% 100%,   100% 100%, center; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html, body { animation: none; }
 }
 
 ::selection { background: var(--amber-dim); color: var(--amber); }
