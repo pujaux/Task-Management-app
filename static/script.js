@@ -1,14 +1,14 @@
 /* =========================================================
    Task Control — frontend logic
    Talks to the Flask REST API at /api/tasks
-   Integrated with Native HTML5 Drag-and-Drop
    ========================================================= */
 
 const API = "/api/tasks";
 
 const state = {
-  tasks: [],
-  filters: { search: "", priority: "", category: "" },
+  tasks: [],          // currently rendered (filtered) tasks
+  allTasks: [],        // unfiltered, used to compute sidebar counts
+  filters: { search: "", status: "", priority: "", category: "" },
   editingId: null,
 };
 
@@ -17,7 +17,6 @@ const els = {
   board: document.getElementById("board"),
   search: document.getElementById("search"),
   filterPriority: document.getElementById("filter-priority"),
-  filterCategory: document.getElementById("filter-category"),
   btnClearFilters: document.getElementById("btn-clear-filters"),
   btnNewTask: document.getElementById("btn-new-task"),
 
@@ -44,6 +43,21 @@ const els = {
   statProgress: document.getElementById("stat-progress"),
   statDone: document.getElementById("stat-done"),
   statHigh: document.getElementById("stat-high"),
+
+  boardHeading: document.getElementById("board-heading"),
+  boardSubheading: document.getElementById("board-subheading"),
+  categoryNav: document.getElementById("category-nav"),
+
+  userAvatar: document.getElementById("user-avatar"),
+  userName: document.getElementById("user-name"),
+};
+
+const STATUS_LABEL = { pending: "Pending", in_progress: "In progress", done: "Done" };
+const STATUS_SUBHEAD = {
+  "": "Everything on the board, sorted by priority and due date.",
+  pending: "Tasks that haven't been started yet.",
+  in_progress: "Tasks currently being worked on.",
+  done: "Tasks that have been completed.",
 };
 
 // ---------- Utilities ----------
@@ -60,6 +74,10 @@ function escapeHtml(str) {
   return div.innerHTML;
 }
 
+function taskCode(id) {
+  return `TC-${String(id).padStart(4, "0")}`;
+}
+
 function dueLabel(dueDateStr) {
   if (!dueDateStr) return { text: "No due date", cls: "" };
   const today = new Date();
@@ -67,7 +85,7 @@ function dueLabel(dueDateStr) {
   const due = new Date(dueDateStr + "T00:00:00");
   const diffDays = Math.round((due - today) / 86400000);
 
-  if (diffDays < 0) return { text: `Overdue by ${Math.abs(diffDays)}d`, cls: "card__due--overdue" };
+  if (diffDays < 0) return { text: `Overdue ${Math.abs(diffDays)}d`, cls: "card__due--overdue" };
   if (diffDays === 0) return { text: "Due today", cls: "card__due--soon" };
   if (diffDays === 1) return { text: "Due tomorrow", cls: "card__due--soon" };
   if (diffDays <= 3) return { text: `Due in ${diffDays}d`, cls: "card__due--soon" };
@@ -90,11 +108,17 @@ async function apiRequest(url, options = {}) {
 async function fetchTasks() {
   const params = new URLSearchParams();
   if (state.filters.search) params.set("search", state.filters.search);
+  if (state.filters.status) params.set("status", state.filters.status);
   if (state.filters.priority) params.set("priority", state.filters.priority);
   if (state.filters.category) params.set("category", state.filters.category);
 
   state.tasks = await apiRequest(`${API}?${params.toString()}`);
   render();
+}
+
+async function fetchAllForCounts() {
+  state.allTasks = await apiRequest(API);
+  renderSidebarCounts();
 }
 
 async function fetchStats() {
@@ -105,16 +129,57 @@ async function fetchStats() {
   els.statProgress.textContent = stats.in_progress;
   els.statDone.textContent = stats.done;
   els.statHigh.textContent = stats.high_open;
-
-  const current = els.filterCategory.value;
-  els.filterCategory.innerHTML = '<option value="">All categories</option>' +
-    stats.categories.map(c => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join("");
-  els.filterCategory.value = current;
 }
 
 async function refreshAll() {
-  await Promise.all([fetchTasks(), fetchStats()]);
+  await Promise.all([fetchTasks(), fetchStats(), fetchAllForCounts()]);
 }
+
+// ---------- Sidebar ----------
+function renderSidebarCounts() {
+  const all = state.allTasks;
+  document.getElementById("nav-count-all").textContent = all.length;
+  document.getElementById("nav-count-pending").textContent = all.filter(t => t.status === "pending").length;
+  document.getElementById("nav-count-in_progress").textContent = all.filter(t => t.status === "in_progress").length;
+  document.getElementById("nav-count-done").textContent = all.filter(t => t.status === "done").length;
+
+  document.querySelectorAll(".nav-btn[data-status-filter]").forEach(btn => {
+    btn.classList.toggle("active", btn.dataset.statusFilter === state.filters.status);
+  });
+
+  const counts = {};
+  for (const t of all) {
+    const cat = t.category || "General";
+    counts[cat] = (counts[cat] || 0) + 1;
+  }
+  const categories = Object.keys(counts).sort((a, b) => a.localeCompare(b));
+
+  els.categoryNav.innerHTML = categories.map(cat => `
+    <button class="nav-btn ${state.filters.category === cat ? "active" : ""}" data-category-filter="${escapeHtml(cat)}">
+      <span>${escapeHtml(cat)}</span><span class="nav-btn__count">${counts[cat]}</span>
+    </button>
+  `).join("") || `<div class="sidebar__label" style="opacity:.6;">No categories yet</div>`;
+
+  els.categoryNav.querySelectorAll("[data-category-filter]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const cat = btn.dataset.categoryFilter;
+      state.filters.category = state.filters.category === cat ? "" : cat;
+      fetchTasks();
+      renderSidebarCounts();
+    });
+  });
+
+  els.boardHeading.textContent = state.filters.status ? STATUS_LABEL[state.filters.status] : "All tasks";
+  els.boardSubheading.textContent = STATUS_SUBHEAD[state.filters.status] || STATUS_SUBHEAD[""];
+}
+
+document.querySelectorAll(".nav-btn[data-status-filter]").forEach(btn => {
+  btn.addEventListener("click", () => {
+    state.filters.status = btn.dataset.statusFilter;
+    fetchTasks();
+    renderSidebarCounts();
+  });
+});
 
 // ---------- Rendering ----------
 function render() {
@@ -130,42 +195,37 @@ function render() {
     countEl.textContent = items.length;
 
     if (items.length === 0) {
-      list.innerHTML = `<div class="column__empty" data-status="${status}">No tasks here. Drop items here.</div>`;
+      list.innerHTML = `<div class="column__empty">No tasks here.<br>Drop a card or add a new task.</div>`;
       continue;
     }
 
     list.innerHTML = items.map(renderCard).join("");
   }
 
-  // Bind interactions and Native Drag-and-Drop to task cards
   document.querySelectorAll(".card").forEach(card => {
     const id = Number(card.dataset.id);
-    
-    // Modal open event
+
     card.addEventListener("click", (e) => {
       if (e.target.closest("[data-action]")) return;
       openEditModal(id);
     });
 
-    // Drag start event
     card.addEventListener("dragstart", (e) => {
       card.classList.add("card--dragging");
       e.dataTransfer.setData("text/plain", id);
       e.dataTransfer.effectAllowed = "move";
     });
 
-    // Drag end clean up
     card.addEventListener("dragend", () => {
       card.classList.remove("card--dragging");
     });
   });
 
-  // Setup column drop containers
   ["pending", "in_progress", "done"].forEach(status => {
     const listContainer = document.getElementById(`list-${status}`);
-    
+
     listContainer.addEventListener("dragover", (e) => {
-      e.preventDefault(); // Required to allow drop action
+      e.preventDefault();
       e.dataTransfer.dropEffect = "move";
       listContainer.classList.add("column__list--dragover");
     });
@@ -177,7 +237,7 @@ function render() {
     listContainer.addEventListener("drop", async (e) => {
       e.preventDefault();
       listContainer.classList.remove("column__list--dragover");
-      
+
       const taskId = Number(e.dataTransfer.getData("text/plain"));
       if (!taskId) return;
 
@@ -188,7 +248,6 @@ function render() {
     });
   });
 
-  // Wire up inline action buttons
   document.querySelectorAll("[data-action='cycle']").forEach(btn => {
     btn.addEventListener("click", (e) => {
       e.stopPropagation();
@@ -207,22 +266,28 @@ function render() {
 function renderCard(task) {
   const due = dueLabel(task.due_date);
   const isDone = task.status === "done";
-  const nextLabel = { pending: "Start →", in_progress: "Finish →", done: "Reopen ↺" }[task.status];
+  const cycleIcon = { pending: "▶", in_progress: "✓", done: "↺" }[task.status];
+  const cycleTitle = { pending: "Start task", in_progress: "Mark done", done: "Reopen task" }[task.status];
 
   return `
     <div class="card ${isDone ? "card--done" : ""}" data-id="${task.id}" data-priority="${task.priority}" draggable="true">
-      <div class="card__top">
-        <div class="card__title">${escapeHtml(task.title)}</div>
-        <span class="badge badge--${task.priority}">${task.priority}</span>
-      </div>
-      ${task.description ? `<div class="card__desc">${escapeHtml(task.description)}</div>` : ""}
-      <div class="card__meta">
-        <span class="card__category">${escapeHtml(task.category || "General")}</span>
-        <span class="card__due ${due.cls}">${due.text}</span>
+      <div class="card__body">
+        <div class="card__top">
+          <div>
+            <div class="card__code">${taskCode(task.id)}</div>
+            <div class="card__title">${escapeHtml(task.title)}</div>
+          </div>
+          <span class="badge badge--${task.priority}">${task.priority}</span>
+        </div>
+        ${task.description ? `<div class="card__desc">${escapeHtml(task.description)}</div>` : ""}
+        <div class="card__meta">
+          <span class="card__category">${escapeHtml(task.category || "General")}</span>
+          <span class="card__due ${due.cls}">${due.text}</span>
+        </div>
       </div>
       <div class="card__actions">
-        <button data-action="cycle" data-id="${task.id}">${nextLabel}</button>
-        <button data-action="delete" data-id="${task.id}" class="danger">Delete</button>
+        <button data-action="cycle" data-id="${task.id}" title="${cycleTitle}">${cycleIcon}</button>
+        <button data-action="delete" data-id="${task.id}" title="Delete task">✕</button>
       </div>
     </div>
   `;
@@ -254,8 +319,8 @@ async function handleDragDropUpdate(id, newStatus, currentTask) {
       method: "PUT",
       body: JSON.stringify(payload),
     });
-    
-    showToast(`Moved to ${newStatus.replace('_', ' ')}`);
+
+    showToast(`Moved to ${STATUS_LABEL[newStatus].toLowerCase()}`);
     await refreshAll();
   } catch (err) {
     showToast(err.message);
@@ -276,7 +341,7 @@ async function deleteTask(id) {
 // ---------- Modal ----------
 function openNewModal() {
   state.editingId = null;
-  els.modalTitle.textContent = "New Task";
+  els.modalTitle.textContent = "New task";
   els.form.reset();
   els.fieldId.value = "";
   els.fieldCategory.value = "General";
@@ -289,10 +354,10 @@ function openNewModal() {
 }
 
 function openEditModal(id) {
-  const task = state.tasks.find(t => t.id === id);
+  const task = state.tasks.find(t => t.id === id) || state.allTasks.find(t => t.id === id);
   if (!task) return;
   state.editingId = id;
-  els.modalTitle.textContent = "Edit Task";
+  els.modalTitle.textContent = `Edit ${taskCode(task.id)}`;
   els.fieldId.value = task.id;
   els.fieldTitle.value = task.title;
   els.fieldDescription.value = task.description || "";
@@ -301,7 +366,7 @@ function openEditModal(id) {
   els.fieldPriority.value = task.priority;
   els.fieldStatus.value = task.status;
   els.formError.textContent = "";
-  els.btnDelete.style.display = "inline-block";
+  els.btnDelete.style.display = "inline-flex";
   els.overlay.classList.add("open");
   els.fieldTitle.focus();
 }
@@ -359,16 +424,15 @@ function onSearchInput() {
 
 function onFilterChange() {
   state.filters.priority = els.filterPriority.value;
-  state.filters.category = els.filterCategory.value;
   fetchTasks();
 }
 
 function clearFilters() {
-  state.filters = { search: "", priority: "", category: "" };
+  state.filters = { search: "", status: "", priority: "", category: "" };
   els.search.value = "";
   els.filterPriority.value = "";
-  els.filterCategory.value = "";
   fetchTasks();
+  renderSidebarCounts();
 }
 
 // ---------- Wire up events ----------
@@ -376,7 +440,13 @@ els.btnNewTask.addEventListener("click", openNewModal);
 els.modalClose.addEventListener("click", closeModal);
 els.btnCancel.addEventListener("click", closeModal);
 els.overlay.addEventListener("click", (e) => { if (e.target === els.overlay) closeModal(); });
-document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeModal(); });
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") closeModal();
+  if (e.key.toLowerCase() === "n" && !els.overlay.classList.contains("open") &&
+      document.activeElement.tagName !== "INPUT" && document.activeElement.tagName !== "TEXTAREA") {
+    openNewModal();
+  }
+});
 
 els.form.addEventListener("submit", handleFormSubmit);
 els.btnDelete.addEventListener("click", async () => {
@@ -387,15 +457,25 @@ els.btnDelete.addEventListener("click", async () => {
 
 els.search.addEventListener("input", onSearchInput);
 els.filterPriority.addEventListener("change", onFilterChange);
-els.filterCategory.addEventListener("change", onFilterChange);
 els.btnClearFilters.addEventListener("click", clearFilters);
 
-function renderToday() {
-  const el = document.getElementById("today-badge");
-  if (!el) return;
-  const opts = { weekday: "long", month: "long", day: "numeric" };
-  el.textContent = new Date().toLocaleDateString("en-US", opts);
+// ---------- User avatar ----------
+function renderUser() {
+  const name = (els.userName.textContent || "").trim();
+  els.userAvatar.textContent = name ? name.slice(0, 2).toUpperCase() : "OP";
 }
-renderToday();
+renderUser();
+
+// ---------- Live clock ----------
+function tickClock() {
+  const now = new Date();
+  const timeEl = document.getElementById("clock-time");
+  const dateEl = document.getElementById("clock-date");
+  if (timeEl) timeEl.textContent = now.toLocaleTimeString("en-US", { hour12: false });
+  if (dateEl) dateEl.textContent = now.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric", year: "numeric" });
+}
+tickClock();
+setInterval(tickClock, 1000);
+
 // ---------- Init ----------
 refreshAll();
