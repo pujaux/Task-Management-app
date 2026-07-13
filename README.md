@@ -5,6 +5,27 @@ A full-stack task management dashboard built with **Flask**, **SQLite**, and van
 
 
 ---
+## Demo
+
+
+https://github.com/user-attachments/assets/1f9d8232-9df0-470f-8d79-4f0bf06f4998
+
+
+
+
+
+
+
+---
+
+## Screenshots
+<img width="1920" height="930" alt="Screenshot (83)" src="https://github.com/user-attachments/assets/46a789fc-b457-4f79-8199-53eb49abd398" />
+
+<img width="1920" height="960" alt="Screenshot (84)" src="https://github.com/user-attachments/assets/c0ab9a05-1982-4f2d-a9a0-0a3465621649" />
+
+<img width="1920" height="885" alt="Screenshot (85)" src="https://github.com/user-attachments/assets/e5b27583-c61c-4f69-ba32-c5d41856a89e" />
+
+---
 
 ## ✨ Features
 
